@@ -2,19 +2,28 @@ import React, { useState,Component } from 'react';
 //import logo from './logo.svg';
 import './App.css';
 import Person from './Person/Person';
-
+import Validation from './Validation/Validation';
+import Split from './Splitting/Split'
 
 //const app =props=> {
 class App extends Component{
 
   state =({
     persons: [
-      {name: "Souvik", age: 28},
-      {name: "Himu", age: 40},
-      {name: "Nunu", age: 10}
+      {id:"abc" ,name: "Souvik", age: 28},
+      {id:"def" ,name: "Himu", age: 40},
+      {id:"ghi" ,name: "Nunu", age: 10}
     ],
-    showHidden: true
+    showHidden: true,
+    userInpur : ""
   })
+
+  exampleHandler =(event)=>{
+
+    this.setState({
+      userInpur : event.target.value
+    })
+  }
 
  /* buttonHandler = (newName)=>
   this.setState({
@@ -25,14 +34,24 @@ class App extends Component{
               ],
               showHidden: true
             })*/
-  /*newNameChangeHandler =(bal)=>
-  this.setState({
-    persons: [
-      {name: "Souvik", age: 28},
-      {name: bal.target.value, age: 40},
-      {name: "Nunu", age: 10}
-              ]
-            })*/
+  newNameChangeHandler =(bal,id)=>{
+
+          const personIdx = this.state.persons.findIndex(x =>{
+            return x.id === id;
+          }); //getting index match where to update
+          const person = { 
+            ...this.state.persons[personIdx]
+          } // getting person object of that index
+          person.name = bal.target.value; //getting value from even
+          const persons = [...this.state.persons]; // creating new copy of original list
+          persons[personIdx] = person; //assiging new value to the desired index i.e. 'person' object has updated value
+
+    this.setState({
+
+      persons: persons  
+    })
+    
+ }
   toggleElements =()=>
   {
     const val=this.state.showHidden;
@@ -40,7 +59,14 @@ class App extends Component{
       showHidden : !val
     })
   }
-
+  deletePersonHandler=(index)=>{
+      //const updatePerson = this.state.persons.slice(); //copying entire state of array to 'updatePerson' by slice()
+      const updatePerson = [...this.state.persons]; //same as abouve, spread operator, ES6 feature
+      updatePerson.splice(index,1);
+      this.setState({
+        persons: updatePerson
+      });
+  }
   render(){
 
     let p =null;
@@ -49,8 +75,9 @@ class App extends Component{
         <div>
           {
             this.state.persons
-            .map(v =>{
-                return <Person name={v.name} age={v.age}/>
+            .map((v) =>{
+                return <Person name={v.name} age={v.age} click={()=>this.deletePersonHandler(v.id)}
+                key={v.id} change={(event)=> this.newNameChangeHandler(event,v.id)}/>
               }
               
             )
@@ -59,12 +86,22 @@ class App extends Component{
       );
     }
 
+    
+
 
     return (
       <div className="App">
         <h1>Hi, I am react app generator!!!!!!!</h1>
         <button onClick={this.toggleElements}>Toggle</button>
         {p}
+        <p>
+          <input type="text" value={this.stateuserInpur} onChange={this.exampleHandler}/>
+        <p>{this.state.userInpur}</p>
+        <Validation inputLength = {this.state.userInpur.length}/>
+        </p>
+        <p>
+            <Split strV={this.state.userInpur}/>
+        </p>
       </div> 
     );
     }
