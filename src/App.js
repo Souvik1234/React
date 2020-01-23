@@ -1,4 +1,4 @@
-import React, { useState,Component } from 'react';
+import React, { useState,Component,useEffect } from 'react';
 //import logo from './logo.svg';
 import './App.css';
 import Person from './Person/Person';
@@ -7,15 +7,16 @@ import Split from './Splitting/Split'
 
 //const app =props=> {
 class App extends Component{
-
+  
   state =({
     persons: [
       {id:"abc" ,name: "Souvik", age: 28},
-      {id:"def" ,name: "Himu", age: 40},
-      {id:"ghi" ,name: "Nunu", age: 10}
+      /*{id:"def" ,name: "Himu", age: 40},
+      {id:"ghi" ,name: "Nunu", age: 10}*/
     ],
     showHidden: true,
-    userInpur : ""
+    userInpur : "",
+    showEntire: true
   })
 
   exampleHandler =(event)=>{
@@ -67,9 +68,19 @@ class App extends Component{
         persons: updatePerson
       });
   }
+
+  toggleEntire =()=>{
+    const val = this.state.showEntire;
+    this.setState({
+      showEntire: !val
+    })
+  }
+
   render(){
 
     let p =null;
+    let q=null;
+    if(this.state.showEntire == true){
     if(this.state.showHidden===true){
       p=(
         <div>
@@ -84,6 +95,7 @@ class App extends Component{
           }
         </div>
       );
+      }
     }
 
     
@@ -91,16 +103,16 @@ class App extends Component{
 
     return (
       <div className="App">
+        <button onClick={this.toggleEntire}>ToggleEntire</button>
+        {q}
         <h1>Hi, I am react app generator!!!!!!!</h1>
+        
         <button onClick={this.toggleElements}>Toggle</button>
         {p}
         <p>
           <input type="text" value={this.stateuserInpur} onChange={this.exampleHandler}/>
         <p>{this.state.userInpur}</p>
         <Validation inputLength = {this.state.userInpur.length}/>
-        </p>
-        <p>
-            <Split strV={this.state.userInpur}/>
         </p>
       </div> 
     );
